@@ -1,0 +1,9 @@
+AWSTemplateFormatVersion: 2010-09-09
+Resources: 
+  DevEC2Instance: 
+    Type: 'AWS::EC2::Instance'
+    Properties: 
+      ImageId: ami-05bfbece1ed5beb54
+      InstanceType: t2.micro
+      SecurityGroups:
+        - default
