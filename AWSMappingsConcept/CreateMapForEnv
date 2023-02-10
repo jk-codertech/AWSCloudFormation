@@ -1,0 +1,44 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+
+Mappings:
+  MyEnvMap:
+    dev:
+      instanceType: t2.micro
+    prod:
+      instanceType: t2.small
+
+Parameters:
+  KeyPairParameter:
+    Description: Take KeyName as parameter
+    Type: AWS::EC2::KeyPair::KeyName
+  EnvParameter:
+    Description: Select env from list
+    Type: String
+    Default: dev
+    AllowedValues:
+      - dev
+      - prod 
+
+Resources: 
+  DevEC2Instance: 
+    Type: 'AWS::EC2::Instance'
+    Properties: 
+      ImageId: ami-05bfbece1ed5beb54
+      InstanceType: !FindInMap
+        - MyEnvMap
+        - !Ref EnvParameter
+        - instanceType
+      KeyName: !Ref KeyPairParameter
+      SecurityGroups:
+        - default
+        - !Ref SSHSecureGrp
+  SSHSecureGrp:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: my new SSH SG
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: '22'
+          ToPort: '22'
+          CidrIp: 0.0.0.0/0       
